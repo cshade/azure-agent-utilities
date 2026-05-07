@@ -14,6 +14,24 @@ calendar access.
 
 **Documentation:** [`scripts/test_graph_calendar_README.md`](scripts/test_graph_calendar_README.md)
 
+## Development
+
+This repository uses `pre-commit` with Ruff to lint and format Python files
+before commits.
+
+Install the hook locally:
+
+```bash
+pip install pre-commit
+pre-commit install
+```
+
+Run the checks manually:
+
+```bash
+pre-commit run --all-files
+```
+
 ## Security Notes
 
 Runtime output and local credentials should not be committed. In particular,

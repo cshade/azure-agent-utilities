@@ -1,0 +1,9 @@
+scripts/.token_cache.json
+
+# Local environment/configuration
+.env
+.env.*
+
+# Python cache files
+__pycache__/
+*.py[cod]

@@ -30,7 +30,9 @@ CLIENT_ID = os.environ.get("AZURE_CLIENT_ID", "YOUR_CLIENT_ID_HERE")
 
 # "common"  → work/school + personal accounts
 # "consumers" → personal Microsoft accounts only
-AUTHORITY = os.environ.get("AZURE_AUTHORITY", "https://login.microsoftonline.com/common")
+AUTHORITY = os.environ.get(
+    "AZURE_AUTHORITY", "https://login.microsoftonline.com/common"
+)
 
 SCOPES = ["Calendars.Read", "User.Read"]
 
@@ -39,7 +41,7 @@ GRAPH_BASE = "https://graph.microsoft.com/v1.0"
 # calendarView window (next 7 days)
 _now = datetime.now(timezone.utc)
 START = _now.strftime("%Y-%m-%dT%H:%M:%SZ")
-END   = (_now + timedelta(days=7)).strftime("%Y-%m-%dT%H:%M:%SZ")
+END = (_now + timedelta(days=7)).strftime("%Y-%m-%dT%H:%M:%SZ")
 
 # ---------------------------------------------------------------------------
 # Token cache (persists across runs so you only auth once)
@@ -103,7 +105,9 @@ def acquire_token() -> str:
     accounts = app.get_accounts()
     result = None
     if accounts:
-        print(f"[auth] Found cached account: {accounts[0].get('username', '(unknown)')}")
+        print(
+            f"[auth] Found cached account: {accounts[0].get('username', '(unknown)')}"
+        )
         result = app.acquire_token_silent(SCOPES, account=accounts[0])
 
     # Fall back to device code flow (works in any terminal, no browser redirect needed)
@@ -113,7 +117,9 @@ def acquire_token() -> str:
         # If the app is configured as Microsoft Account (MSA) only,
         # Azure AD requires the /consumers authority endpoint.
         if flow.get("error_codes") and 9002346 in flow.get("error_codes", []):
-            print("[auth] App appears to be MSA-only; retrying with /consumers authority")
+            print(
+                "[auth] App appears to be MSA-only; retrying with /consumers authority"
+            )
             app = msal.PublicClientApplication(
                 client_id=CLIENT_ID,
                 authority="https://login.microsoftonline.com/consumers",
@@ -125,10 +131,12 @@ def acquire_token() -> str:
             _exit_device_flow_error(flow)
 
         print("\n" + "=" * 60)
-        print(flow["message"])   # Tells the user to visit aka.ms/devicelogin
+        print(flow["message"])  # Tells the user to visit aka.ms/devicelogin
         print("=" * 60 + "\n")
 
-        result = app.acquire_token_by_device_flow(flow)  # blocks until user authenticates
+        result = app.acquire_token_by_device_flow(
+            flow
+        )  # blocks until user authenticates
 
     _save_cache(cache)
 
@@ -136,7 +144,9 @@ def acquire_token() -> str:
         error = result.get("error_description") or result.get("error") or str(result)
         sys.exit(f"[auth] Could not obtain token: {error}")
 
-    print(f"[auth] Authenticated as: {result.get('id_token_claims', {}).get('preferred_username', '(unknown)')}\n")
+    print(
+        f"[auth] Authenticated as: {result.get('id_token_claims', {}).get('preferred_username', '(unknown)')}\n"
+    )
     return result["access_token"]
 
 
